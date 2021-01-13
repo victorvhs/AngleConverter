@@ -1,0 +1,35 @@
+version: '3.7'
+services: 
+  db:
+    image: postgres:alpine
+    restart: always
+    environment: 
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: angle
+    ports:
+      - "5432:5432"
+    volumes:
+      - dataBase:/var/lib/postgresql/data
+  node-api:
+    build:
+      context: .
+    environment: 
+      env: prod
+      DB_URL: postgres://postgres:postgres@db:5432/angle
+    depends_on: 
+      - db
+    ports:
+      - 8080:8080
+  #for dev envarioment  
+  pgtest:
+    image: dpage/pgadmin4
+    environment: 
+      PGADMIN_DEFAULT_EMAIL: "victor@vhreis.net"
+      PGADMIN_DEFAULT_PASSWORD: "7654321"
+    ports:
+      - "8282:80"
+    depends_on: 
+      - db
+volumes:
+  dataBase:
